@@ -127,7 +127,33 @@ class StudentDAOTest {
     }
 
     @Test
-    void delete() {
+    @DisplayName("Valida ser a remoção do estudante ocorreu com sucesso, quando um estudante existe")
+    void delete_removeStudent_whenStudentExist() {
+        /* COMO O MÉTODO DELETE NÃO TEM RETORNO O QUE SERÁ VERIFICADO É COMO ESTÁ A SITUAÇÃO
+        * ANTES DO MÉTODO SER EXECUTADO E TESTAR NOVAMENTE DEPOIS QUE ELE FOR CHAMADO
+        * PARA VER SE O DELETE OCORREU CORRETAMENTE */
+        StudentDTO newStudent = TestUtilsGenerator.getNewStudentWithOneSubject();
+
+        StudentDTO savedStudent = studentDAO.save(newStudent);
+
+        studentDAO.delete(savedStudent.getId());
+
+        assertThat(studentDAO.exists(savedStudent)).isFalse();
+
+    }
+
+    @Test
+    @DisplayName("Valida ser a remoção do estudante ocorreu com sucesso, quando um estudante existe")
+    void delete_throwException_whenStudentNotExist() {
+        /* COMO O MÉTODO DELETE NÃO TEM RETORNO  */
+        StudentDTO student = TestUtilsGenerator.getStudentWithId();
+
+        StudentNotFoundException exception = Assertions.assertThrows(StudentNotFoundException.class, () -> {
+            studentDAO.delete(student.getId());
+        });
+
+        assertThat(exception.getError().getDescription()).contains(student.getId().toString());
+        assertThat(exception.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
