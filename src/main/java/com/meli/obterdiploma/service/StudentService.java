@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Service
 public class StudentService implements IStudentService {
-
+    /* O SERVIÇO DEPENDE DAS DEPENDÊNCIAS DO REPOSITÓRIO. PORTANTO É NECESSÁRIO SIMULAR O QUE FOR NECESSÁRIO*/
     @Autowired
     IStudentDAO studentDAO;
 
