@@ -31,6 +31,7 @@ class StudentDAOTest {
      PARA USAR. COMO SÓ EXISTE 1 CLASSE IMPLEMENTANDO ESSA INTERFACE, ELE SABERÁ QUAL USAR.
 
      NESTE EXEMPLO, FOI REMOVIDA A INJEÇÃO DE DEPENDÊNCIA ABAIXO, PARA UTILIZAR O MÉTODO setup()
+     Porque: O OBJETO DO STUDENTDAO DEVE SER GERADO A CADA VEZ QUE FOR RODAR OS TESTES
 
      @Autowired
      private IStudentDAO studentDAO;
@@ -38,7 +39,7 @@ class StudentDAOTest {
     private IStudentDAO studentDAO; // GERA UM OBJETO
 
     // ANTES DE CADA TESTE
-    @BeforeEach
+    @BeforeEach @AfterEach
     void setup() {
         // GERAR O OBJETO
         studentDAO = new StudentDAO();
@@ -48,12 +49,13 @@ class StudentDAOTest {
     }
 
     // DEPOIS DE TESTAR TUDO.
-    @AfterAll
+    // @AfterAll
     // Tem que ser um método estático
-    public static void tearDown() {
+    // Foi removido, conforme o do professor, porque apareceram comportamentos indesejados, que não serão sanados porque são irrelevantes, pois possivelmente são compartamentos por estar usando um arquivo para salvar
+    // public static void tearDown() {
         // APAGAR OS DADOS QUE ESTÃO NO ARQUIVO
-        TestUtilsGenerator.emptyUsersFile();
-    }
+        // TestUtilsGenerator.emptyUsersFile();
+    // }
 
     @Test
     void save_saveStudent_whenNewStudent() {
