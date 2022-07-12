@@ -36,6 +36,7 @@ class StudentDAOTest {
      @Autowired
      private IStudentDAO studentDAO;
     */
+
     private IStudentDAO studentDAO; // GERA UM OBJETO
 
     // ANTES DE CADA TESTE
@@ -143,20 +144,27 @@ class StudentDAOTest {
     }
 
     @Test
-    @DisplayName("Valida ser a remoção do estudante ocorreu com sucesso, quando um estudante existe")
+    @DisplayName("Valida se será lançada uma exceção, quando um estudante não existe")
     void delete_throwException_whenStudentNotExist() {
-        /* COMO O MÉTODO DELETE NÃO TEM RETORNO  */
+        /* NESTE CASO O QUE SERÁ VALIDADO É O COMPORTAMENTO ESPERADO AO ENVIAR UM ESTUDANTE INEXISTENTE
+        * OU SEJA, SE A EXCEÇÃO SERÁ LANÇADA CORRETAMENTE.
+        * PRIMEIRO PREPARA O CENÁRIO CRIANDO O OBJETO ESTUDANTE */
         StudentDTO student = TestUtilsGenerator.getStudentWithId();
 
+        // DEPOIS EXECUTA E TESTA. EXECUTA O MÉTODO E TESTA O SE O RETORNO É UM EXCEÇÃO
+        // 2. EXCEPTION VAI OBTER O RETORNO DESSE TESTE, QUE SERÁ A EXCEÇÃO LANÇADA PELO MÉTODO delete()
         StudentNotFoundException exception = Assertions.assertThrows(StudentNotFoundException.class, () -> {
+            // 1. DELETAR O ESTUDANTE PELO ID, VAI LANÇAR UMA EXCEÇÃO
             studentDAO.delete(student.getId());
         });
 
+        // OUTROS TESTES BASEADOS NA EXCEÇÃO
         assertThat(exception.getError().getDescription()).contains(student.getId().toString());
         assertThat(exception.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
+    @DisplayName("Retorna verdadeiro quando o estudande existe")
     void exists_returnTrue_whenStudentExist() {
         // PREPARA O CENÁRIO
         // - GERA UM ESTUDANTE SEM ID
@@ -186,6 +194,7 @@ class StudentDAOTest {
     }
 
     @Test
+    @DisplayName("Valida se um estudante é retornado quando ele existe no banco/arquivo")
     void findById_returnStudent_whenStudentExist() {
         // PREPARA O CENÁRIO
         // - GERA UM ESTUDANTE COM ID

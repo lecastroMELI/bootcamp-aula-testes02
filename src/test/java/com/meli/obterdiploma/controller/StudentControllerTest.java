@@ -32,11 +32,17 @@ class StudentControllerTest {
 
     @BeforeEach
     public void setup() {
+        // OS MOCKS SÃO NECESSÁRIOS, PARA EVITAR A DEPENDÊNCIA DESTA CAMADA COM A CAMANDA ANTERIOR
+        // A CAMADA REPOSITORY NÃO PRECISOU DE MOCK, JUSTAMENTE POR ELA SER A PRIMEIRA
+
         BDDMockito.when(studentService.create(ArgumentMatchers.any(StudentDTO.class)))
             .thenReturn(TestUtilsGenerator.getStudentWithId());
 
         BDDMockito.when(studentService.read(ArgumentMatchers.anyLong()))
             .thenReturn(TestUtilsGenerator.getStudentWithId());
+
+        // NÃO FAÇA NADA QUANDO STUDENT SERVICE EXECUTAR O DELETE COM QQ ARGUMENTO
+        BDDMockito.doNothing().when(studentService).delete(ArgumentMatchers.anyLong());
     }
 
     @Test
