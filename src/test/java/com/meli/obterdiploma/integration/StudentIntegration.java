@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,6 +38,7 @@ public class StudentIntegration {
 
 
     @BeforeEach // ANTES DE CADA TESTE
+    @AfterEach // depois
     public void setup() {
         // RESPONSÁVEL POR ZERAR O BANCO/ARQUIVO
         TestUtilsGenerator.emptyUsersFile();
@@ -89,7 +91,6 @@ public class StudentIntegration {
         assertThat(studentReturned.getStudentName()).isEqualTo(newStudent.getStudentName()); // se os nome são iguais
     }
 
-
     @Test
     @DisplayName("Valida o erro.")
     public void registerStudent_returnBadRequest_whenStudentHasId() {
@@ -126,8 +127,8 @@ public class StudentIntegration {
     }
 
     @Test
-    @DisplayName("Valida se não retorna o estudante quando ele existe")
-    public void getStudent_returnStudent_whenStudentNotExist() {
+    @DisplayName("Valida se retorna Not Found quando o estudante não existe")
+    public void getStudent_returnStudentNotFound_whenStudentNotExist() {
         // 1. PREPARAÇÃO
 
         // GERA UM ESTUDANTE COM ID
@@ -187,6 +188,44 @@ public class StudentIntegration {
         assertThat(retorno.getStatusCode()).isEqualTo(HttpStatus.OK); // que o status code seja not found
         assertThat(retorno.getBody().getId()).isEqualTo(studentSaved.getId());
         assertThat(retorno.getBody().getStudentName()).isEqualTo(studentSaved.getStudentName());
+    }
+
+
+    @Test
+    @DisplayName("Valida se retorna o estudante quando ele existe")
+    public void modifyStudent_returnStatusNoContent_whenStudentExist() {
+        // 1. PREPARAÇÃO
+        // NECESSÁRIO MONTAR A URL. ROTA BASE
+        String baseUrl = "http://localhost:" + PORT + "/student/modifyStudent";
+
+        // GERA UM ESTUDANTE COM ID
+        StudentDTO newStudent = TestUtilsGenerator.getNewStudentWithOneSubject();
+        // PERSISTO OS DADOS DO ESTUDANTE NO BANCO DE DADOS
+        StudentDAO studentDAO = new StudentDAO();
+        // retorna um estudante com id
+        StudentDTO studentSaved = studentDAO.save(newStudent);
+        studentSaved.setStudentName("Wonder Woman");
+
+        HttpEntity<StudentDTO> httpEntity = new HttpEntity<>(studentSaved);
+
+        // CHAMADA
+        // O ESTUDANTE QUE FOI SALVO ESTÁ SENDO BUSCADO
+        ResponseEntity<Void> retorno = testRestTemplate.exchange(
+            baseUrl,
+            HttpMethod.PUT,
+            httpEntity,
+            Void.class
+        );
+
+        // 3. TESTA OS RESULTADOS DA REQUISIÇÃO
+
+        // testando o retorno do cliente se é o esperado
+        assertThat(retorno.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+        // OUTROS TESTES: VERIFICAR SE OS DADOS QUE ESTÃO NO BANCO, BATEM COM OS DADOS QUE FORAM ENVIADOS
+        StudentDTO studentFound = studentDAO.findById(studentSaved.getId());
+        // - se o estudanter que foi salve tem o mesmo nome do que foi enviado para mudar
+        assertThat(studentFound.getStudentName()).isEqualTo(studentSaved.getStudentName());
     }
 
 }

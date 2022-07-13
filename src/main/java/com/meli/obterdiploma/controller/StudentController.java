@@ -31,10 +31,10 @@ public class StudentController {
         return ResponseEntity.ok(studentService.read(id));
     }
 
-    @PostMapping("/modifyStudent")
-    public ResponseEntity<?> modifyStudent(@RequestBody @Valid StudentDTO stu) {
+    @PutMapping("/modifyStudent")
+    public ResponseEntity<Void> modifyStudent(@RequestBody @Valid StudentDTO stu) {
         this.studentService.update(stu);
-        return ResponseEntity.ok(null);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     // O MÉTODO NÃO VAI RETORNAR NADA
