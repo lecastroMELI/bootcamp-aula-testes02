@@ -22,8 +22,8 @@ import static org.mockito.Mockito.verify;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class StudentServiceTest {
     // VOU TESTAR A CLASSE STUDENT SERVICE
-    // QUANDO PEDIR PARA GERAR O STUDENT SERVICE É NECESSARIO INFORMAR QUE TEREMOS MOCKS. GERA UM OBJETO PARA
-    // SER CONSUMINDO DENTRO DO TESTE E AS DEPENDÊNCIAS DELE SERÃO GERADAS VIA MOCK
+    // QUANDO PEDIR PARA GERAR O STUDENT SERVICE É NECESSARIO INFORMAR QUE TEREMOS MOCKS.
+    // GERA UM OBJETO PARA SER CONSUMINDO DENTRO DO TESTE E AS DEPENDÊNCIAS DELE SERÃO GERADAS VIA MOCK
     @InjectMocks
     StudentService service;
     // INFORMO QUE ESSA IMPLEMENTAÇÃO É QUE SERÁ MOCKADA
@@ -77,6 +77,19 @@ class StudentServiceTest {
 
     @Test
     void update() {
+        StudentDTO studentDTO = TestUtilsGenerator.getStudentWithId();
+        StudentDTO studenteSaved = studentDAO.save(studentDTO);
+
+        studenteSaved.setStudentName("Wonder Woman");
+
+        StudentDTO studentWW = studentDAO.save(studenteSaved);
+
+        assertThatCode(() -> {
+            service.update(studentWW);
+        }).doesNotThrowAnyException();
+
+        StudentDTO studentFind = studentDAO.findById(studentWW.getId());
+        assertThat(studentFind.getStudentName()).isEqualTo("Wonder Woman");
     }
 
     @Test

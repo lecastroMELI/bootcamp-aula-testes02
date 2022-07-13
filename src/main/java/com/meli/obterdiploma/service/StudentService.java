@@ -10,12 +10,15 @@ import java.util.Set;
 
 @Service
 public class StudentService implements IStudentService {
-    /* O SERVIÇO DEPENDE DAS DEPENDÊNCIAS DO REPOSITÓRIO. PORTANTO É NECESSÁRIO SIMULAR O QUE FOR NECESSÁRIO*/
+    /* O SERVIÇO É DEPENDENTE DO REPOSITÓRIO. PORTANTO É NECESSÁRIO SIMULAR, NOS TESTES, O QUE FOR NECESSÁRIO */
+
+    // INJEÇÃO DE DEPENDÊNCIA
     @Autowired
     IStudentDAO studentDAO;
 
     @Autowired
     IStudentRepository studentRepository;
+    // ----------------------
 
     @Override
     public StudentDTO create(StudentDTO stu) {

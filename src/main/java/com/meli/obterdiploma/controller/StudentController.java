@@ -19,12 +19,16 @@ public class StudentController {
 
     @PostMapping("/registerStudent")
     public ResponseEntity<StudentDTO> registerStudent(@RequestBody @Valid StudentDTO stu) {
-        return ResponseEntity.ok(studentService.create(stu));
+        // se mandar uma chamada para registrar um NOVO estudante e ela já vem com ID está errado
+        if(stu.getId() != null){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(studentService.create(stu));
     }
 
     @GetMapping("/getStudent/{id}")
-    public StudentDTO getStudent(@PathVariable Long id) {
-        return this.studentService.read(id);
+    public ResponseEntity<StudentDTO> getStudent(@PathVariable Long id) {
+        return ResponseEntity.ok(studentService.read(id));
     }
 
     @PostMapping("/modifyStudent")

@@ -65,12 +65,12 @@ class StudentControllerTest {
         StudentDTO studentDTO = TestUtilsGenerator.getStudentWithId();
 
         // AO CHAMAR O CONTROLLER, ELE CHAMA O MÉTODO MOCK, E TEM COMO RESPOSTA UM STUDENT COM ID
-        StudentDTO studentFound = controller.getStudent(studentDTO.getId());
+        ResponseEntity<StudentDTO> response = controller.getStudent(studentDTO.getId());
 
         Mockito.verify(studentService, Mockito.atLeastOnce()).read(studentDTO.getId());
 
         // VERIFICA SE TEM O MESMO ID
-        Assertions.assertThat(studentFound.getId()).isEqualTo(studentDTO.getId());
+        Assertions.assertThat(response.getBody().getId()).isEqualTo(studentDTO.getId());
     }
 
     @Test
