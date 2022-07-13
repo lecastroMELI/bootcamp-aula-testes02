@@ -190,9 +190,8 @@ public class StudentIntegration {
         assertThat(retorno.getBody().getStudentName()).isEqualTo(studentSaved.getStudentName());
     }
 
-
     @Test
-    @DisplayName("Valida se retorna o estudante quando ele existe")
+    @DisplayName("Valida se altera o estudante quando ele existe")
     public void modifyStudent_returnStatusNoContent_whenStudentExist() {
         // 1. PREPARAÇÃO
         // NECESSÁRIO MONTAR A URL. ROTA BASE
@@ -201,11 +200,11 @@ public class StudentIntegration {
         // GERA UM ESTUDANTE COM ID
         StudentDTO newStudent = TestUtilsGenerator.getNewStudentWithOneSubject();
         // PERSISTO OS DADOS DO ESTUDANTE NO BANCO DE DADOS
-        StudentDAO studentDAO = new StudentDAO();
-        // retorna um estudante com id
-        StudentDTO studentSaved = studentDAO.save(newStudent);
-        studentSaved.setStudentName("Wonder Woman");
+        StudentDAO studentDAO = new StudentDAO(); // instancia
+        StudentDTO studentSaved = studentDAO.save(newStudent); // retorna um estudante com id
+        studentSaved.setStudentName("Wonder Woman"); // faz a alteração
 
+        // CRIA O BODY
         HttpEntity<StudentDTO> httpEntity = new HttpEntity<>(studentSaved);
 
         // CHAMADA
@@ -224,7 +223,7 @@ public class StudentIntegration {
 
         // OUTROS TESTES: VERIFICAR SE OS DADOS QUE ESTÃO NO BANCO, BATEM COM OS DADOS QUE FORAM ENVIADOS
         StudentDTO studentFound = studentDAO.findById(studentSaved.getId());
-        // - se o estudanter que foi salve tem o mesmo nome do que foi enviado para mudar
+        // - se o estudante que foi salvo tem o mesmo nome do que foi enviado para mudar
         assertThat(studentFound.getStudentName()).isEqualTo(studentSaved.getStudentName());
     }
 
